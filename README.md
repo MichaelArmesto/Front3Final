@@ -21,10 +21,10 @@ Es indispensable clonar este proyecto en un repositorio privado, para poder trab
 
 ```
 # clona el repositorio del final en tu computadora
-git clone https://github.com/DH-Esp-Frontend/ctd-esp-fe3-final 
+git clone https://github.com/humbertodrc/ctd-esp-frontend3-final.git
 
 # ingresa al directorio del final
-cd ctd-esp-fe3-final
+ctd-esp-frontend3-final
 
 # elimina los links al repositorio de DH
 git remote remove origin
@@ -43,7 +43,7 @@ No olvides agregar los permisos a las cuentas mencionadas en el [Formato de Entr
 Las siguientes condiciones son requisitos mínimos necesarios para la aprobación del final:
 
 * **Cumplir con todas las funcionalidades obligatorias**
-* Solo se podrán utilizar las librerías que se detallan en este README. Ver [Dependencias](docs/desarrollo.md#dependencias) y [Dependencias de Desarrollo](docs/desarrollo.md#dependencias-de-desarrollo)
+* Solo se podrán utilizar las librerías que se detallan en este README. Ver [Dependencias](/src/docs/desarrollo.md#dependencias) y [Dependencias de Desarrollo](/src/docs/desarrollo.md#dependencias-de-desarrollo)
 * No se considerará realizada cualquier funcionalidad que sea implementada utilizando una librería distinta a las permitidas.
 * Deberá ser desarrollada utilizando Typescript como lenguaje.
 * Deberá contar con tests unitarios escritos para la página de checkout, tal como se indica en la consigna número 4. Para ello deberá emplearse Jest y React Testing Library. Además, se deberá utilizar MSW o alguna otra librería para interceptar los requests y mockear una respuesta.
@@ -80,11 +80,11 @@ Los siguientes aspectos son extras al requisito mínimo de aprobación que será
 
 ## Funcionalidades
 
-Ver [Funcionalidades](docs/funcionalidades.md).
+Ver [Funcionalidades](/src/docs/funcionalidades.md).
     
 ## Desarrollo
 
-Ver [Desarrollo](docs/desarrollo.md).
+Ver [Desarrollo](/src/docs/desarrollo.md).
 
 ## Entrega
 
