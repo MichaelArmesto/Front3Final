@@ -12,10 +12,33 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "baseUrl": "src/",
     "paths": {
-      "@/*": ["./src/*"]
+      "dh-marvel/components/*": [
+        "components/*"
+      ],
+      "dh-marvel/services/*": [
+        "services/*"
+      ],
+      "dh-marvel/features/*": [
+        "features/*"
+      ],
+      "dh-marvel/pages/*": [
+        "pages/*"
+      ],
+      "dh-marvel/styles/*": [
+        "styles/*"
+      ],
+      "dh-marvel/test/*": [
+        "test/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "types.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
