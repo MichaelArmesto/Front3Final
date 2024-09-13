@@ -34,7 +34,6 @@ const ConfirmacionCompra = () => {
 
       <Container sx={{ marginTop: 4, display: 'flex', flexDirection: 'row', alignItems: 'flex-start', maxWidth: '100%', padding: 4 }}>
         
-        {/* Información del cómic a la izquierda */}
         <Box sx={{ flex: 1, maxWidth: 400, marginRight: 4 }}>
           <img
             src={image as string}
@@ -43,7 +42,6 @@ const ConfirmacionCompra = () => {
           />
         </Box>
 
-        {/* Ticket de información del cómic y del cliente a la derecha */}
         <Box
           sx={{
             flex: 1,
@@ -59,19 +57,16 @@ const ConfirmacionCompra = () => {
             alignItems: 'center',
           }}
         >
-          {/* Título del cómic */}
           <Typography variant="h5" gutterBottom textAlign="center" fontWeight="bold">
             {title}
           </Typography>
           <Divider sx={{ my: 2, width: '100%' }} />
 
-          {/* Precio pagado */}
           <Typography variant="h6" textAlign="center" sx={{ marginBottom: 2 }}>
             Precio Pagado: ${price}
           </Typography>
           <Divider sx={{ my: 2, width: '100%' }} />
 
-          {/* Detalles del cliente */}
           <Typography variant="body1" sx={{ marginBottom: 1 }}>
             <strong>Nombre:</strong> {name} {lastname}
           </Typography>
@@ -85,8 +80,6 @@ const ConfirmacionCompra = () => {
             {address1} {address2 ? `, ${address2}` : ''}, {city}, {state}, {zipCode}
           </Typography>
           <Divider sx={{ my: 2, width: '100%' }} />
-
-          {/* Simulación de Código de Barras */}
           <Box
             sx={{
               width: '80%',
@@ -101,7 +94,6 @@ const ConfirmacionCompra = () => {
             0123456789
           </Typography>
 
-          {/* Mensaje de agradecimiento */}
           <Typography variant="body1" sx={{ marginTop: 3, textAlign: 'center' }}>
             <strong>¡Gracias por su compra!</strong>
           </Typography>

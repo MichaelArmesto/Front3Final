@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Link from 'next/link'; // Importa el componente Link de Next.js
+import Link from 'next/link';
 import LayoutGeneral from 'dh-marvel/components/layouts/layout-general';
 import { useEffect, useState } from 'react';
 import { Grid, Card, CardContent, CardMedia, Typography, Button, CircularProgress, Box } from '@mui/material';
@@ -13,7 +13,7 @@ const getRandomColor = () => {
 interface Comic {
   id: number;
   title: string;
-  price:number;
+  price: number;
   thumbnail: {
     path: string;
     extension: string;
@@ -28,20 +28,25 @@ const Index: NextPage = () => {
   const [comics, setComics] = useState<Comic[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(0); // Estado para la paginación
-  const itemsPerPage = 12; // Número de cómics por página
+  const [page, setPage] = useState(0); 
+  const [totalComics, setTotalComics] = useState(0); 
+  const itemsPerPage = 12; 
+  const totalPages = Math.ceil(totalComics / itemsPerPage); 
 
   const fetchComics = async (page: number) => {
     try {
       setLoading(true);
-      const offset = page * itemsPerPage; // Calcular el desplazamiento basado en la página
+      const offset = page * itemsPerPage;
       const response = await fetch(`/api/comics?limit=${itemsPerPage}&offset=${offset}`);
       if (!response.ok) {
         throw new Error('Error al obtener los cómics');
       }
       const data = await response.json();
+      
+      // Actualizar comics y total
       setComics(data.data.results);
-      console.log(data.data.results)
+      setTotalComics(data.data.total); 
+      console.log(data.data.results);
       setLoading(false);
     } catch (err) {
       setError('Error al cargar los cómics');
@@ -51,15 +56,47 @@ const Index: NextPage = () => {
   };
 
   useEffect(() => {
-    fetchComics(page); // Obtener cómics cuando cambie la página
-  }, [page]); // Dependencia en el estado de la página
+    fetchComics(page); 
+  }, [page]); 
 
   const handleNextPage = () => {
-    setPage(prevPage => prevPage + 1); // Incrementar la página en uno
+    setPage((prevPage) => Math.min(prevPage + 1, totalPages - 1)); 
   };
 
   const handlePreviousPage = () => {
-    setPage(prevPage => Math.max(prevPage - 1, 0)); // Decrementar la página en uno
+    setPage((prevPage) => Math.max(prevPage - 1, 0));
+  };
+
+  const handlePageClick = (pageNumber: number) => {
+    setPage(pageNumber); 
+  };
+
+  const renderPageNumbers = () => {
+    const startPage = Math.max(0, page - 3); 
+    const endPage = Math.min(totalPages, startPage + 6); 
+
+    const pageNumbers = [];
+    for (let i = startPage; i < endPage; i++) {
+      pageNumbers.push(
+        <Button
+          key={i}
+          variant={i === page ? 'contained' : 'outlined'}
+          onClick={() => handlePageClick(i)}
+        >
+          {i + 1}
+        </Button>
+      );
+    }
+
+    if (endPage < totalPages) {
+      pageNumbers.push(
+        <Typography key="dots" sx={{ padding: '0 8px' }}>
+          ...
+        </Typography>
+      );
+    }
+
+    return pageNumbers;
   };
 
   return (
@@ -70,7 +107,6 @@ const Index: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Estilos CSS en línea utilizando `sx` */}
       <style jsx global>{`
         .layout-content {
           display: block !important; /* Sobrescribe display: flex */
@@ -86,7 +122,7 @@ const Index: NextPage = () => {
         <Typography variant="h6" align="center" color="error">{error}</Typography>
       ) : (
         <>
-          {/* Contenedor de las tarjetas de cómics */}
+          {/* Contenedor de las tarjetas */}
           <Grid container spacing={3} padding={3} justifyContent="center" sx={{ minHeight: '70vh' }}>
             {comics.map((comic) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={comic.id}>
@@ -159,34 +195,34 @@ const Index: NextPage = () => {
                     </Box>
                   </Box>
                   <CardContent sx={{ textAlign: 'center', padding: 1 }}>
-  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-    {/* Link a la página de checkout */}
-    <Link href={`/checkout/${comic.id}`} passHref>
-  <Button variant="contained" color="primary" size="small" sx={{ marginRight: 1 }}>
-    Comprar
-  </Button>
-</Link>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                      {/* Link  checkout */}
+                      <Link href={`/checkout/${comic.id}`} passHref>
+                        <Button variant="contained" color="primary" size="small" sx={{ marginRight: 1 }}>
+                          Comprar
+                        </Button>
+                      </Link>
 
-    {/* Link a la página de detalle del cómic */}
-    <Link href={`/comics/${comic.id}`} passHref>
-      <Button variant="outlined" color="secondary" size="small">
-        Ver detalle
-      </Button>
-    </Link>
-  </Box>
-</CardContent>
-
+                      {/* Link detalle comic */}
+                      <Link href={`/comics/${comic.id}`} passHref>
+                        <Button variant="outlined" color="secondary" size="small">
+                          Ver detalle
+                        </Button>
+                      </Link>
+                    </Box>
+                  </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
 
-          {/* Contenedor de los botones de paginación */}
+          {/* botones paginacion */}
           <Box display="flex" justifyContent="center" marginTop={4} gap={2} paddingBottom={4}>
             <Button variant="outlined" onClick={handlePreviousPage} disabled={page === 0}>
               Anterior
             </Button>
-            <Button variant="outlined" onClick={handleNextPage}>
+            {renderPageNumbers()}
+            <Button variant="outlined" onClick={handleNextPage} disabled={page === totalPages - 1}>
               Siguiente
             </Button>
           </Box>

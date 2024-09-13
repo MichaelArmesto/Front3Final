@@ -30,7 +30,7 @@ interface Comic {
 
 const CheckoutPage: NextPage<CheckoutPageProps> = ({ comic, error }) => {
   const { control, handleSubmit, formState: { errors, isValid } } = useForm<CheckoutInput>({
-    mode: 'onChange', // Activar la validación en tiempo real
+    mode: 'onChange', // validación en tiempo real
   });
   const [activeStep, setActiveStep] = useState(0);
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
@@ -155,7 +155,6 @@ const CheckoutPage: NextPage<CheckoutPageProps> = ({ comic, error }) => {
         <Typography variant="h4" gutterBottom textAlign="center">Compra de Cómic</Typography>
 
         <Grid container spacing={4} justifyContent="center" alignItems="flex-start">
-          {/* Columna de la izquierda: Detalles del cómic */}
           <Grid item xs={12} md={5}>
             <Card>
               <img
@@ -170,7 +169,6 @@ const CheckoutPage: NextPage<CheckoutPageProps> = ({ comic, error }) => {
             </Card>
           </Grid>
 
-          {/* Columna de la derecha: Formulario de checkout */}
           <Grid item xs={12} md={7}>
             <Stepper activeStep={activeStep} alternativeLabel sx={{ marginBottom: 4 }}>
               {steps.map((label) => (
