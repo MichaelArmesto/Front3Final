@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { Box, Typography, Card, CardContent, Container } from '@mui/material';
+import { Box, Typography, Container, Divider } from '@mui/material';
 import LayoutCheckout from '../components/layouts/layout-checkout';
 import Head from 'next/head';
 
@@ -32,42 +32,82 @@ const ConfirmacionCompra = () => {
         <meta name="robots" content="noindex" />
       </Head>
 
-      {/* Contenedor Principal */}
-      <Container sx={{ marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: '100%', padding: 4 }}>
+      <Container sx={{ marginTop: 4, display: 'flex', flexDirection: 'row', alignItems: 'flex-start', maxWidth: '100%', padding: 4 }}>
         
-        {/* Banner Superior */}
-        <Box sx={{ backgroundColor: 'green', color: 'white', padding: 4, textAlign: 'center', width: '100%' }}>
-          <Typography variant="h4">¡Que disfrutes tu compra!</Typography>
+        {/* Información del cómic a la izquierda */}
+        <Box sx={{ flex: 1, maxWidth: 400, marginRight: 4 }}>
+          <img
+            src={image as string}
+            alt={title as string}
+            style={{ width: '100%', height: 'auto', borderRadius: 8, boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}
+          />
         </Box>
 
-        {/* Contenedor de información del cómic y del cliente */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginTop: 4 }}>
-          {/* Información del cómic */}
-          <Box sx={{ flex: 1, marginRight: 4 }}>
-            <Card>
-              <img
-                src={image as string}
-                alt={title as string}
-                style={{ width: '100%', height: 'auto' }}
-              />
-              <CardContent>
-                <Typography variant="h3" gutterBottom textAlign="center">
-                  {title}
-                </Typography>
-                <Typography variant="h5" gutterBottom textAlign="center">
-                  Precio Pagado: ${price}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Box>
+        {/* Ticket de información del cómic y del cliente a la derecha */}
+        <Box
+          sx={{
+            flex: 1,
+            padding: 3,
+            border: '2px dashed #ccc',
+            borderRadius: 2,
+            maxWidth: 400,
+            backgroundColor: '#fdfdfd',
+            boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+            fontFamily: 'Courier, monospace',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          {/* Título del cómic */}
+          <Typography variant="h5" gutterBottom textAlign="center" fontWeight="bold">
+            {title}
+          </Typography>
+          <Divider sx={{ my: 2, width: '100%' }} />
 
-          {/* Información del cliente y del pedido */}
-          <Box sx={{ flex: 1, padding: 3, border: '1px solid #ccc', borderRadius: 2 }}>
-            <Typography variant="h5" gutterBottom>Detalles de la compra</Typography>
-            <Typography variant="body1"><strong>Nombre:</strong> {name} {lastname}</Typography>
-            <Typography variant="body1"><strong>Email:</strong> {email}</Typography>
-            <Typography variant="body1" gutterBottom><strong>Dirección de Entrega:</strong> {address1} {address2 ? `, ${address2}` : ''}, {city}, {state}, {zipCode}</Typography>
-          </Box>
+          {/* Precio pagado */}
+          <Typography variant="h6" textAlign="center" sx={{ marginBottom: 2 }}>
+            Precio Pagado: ${price}
+          </Typography>
+          <Divider sx={{ my: 2, width: '100%' }} />
+
+          {/* Detalles del cliente */}
+          <Typography variant="body1" sx={{ marginBottom: 1 }}>
+            <strong>Nombre:</strong> {name} {lastname}
+          </Typography>
+          <Typography variant="body1" sx={{ marginBottom: 1 }}>
+            <strong>Email:</strong> {email}
+          </Typography>
+          <Divider sx={{ my: 2, width: '100%' }} />
+          <Typography variant="body1" sx={{ marginBottom: 1 }}>
+            <strong>Dirección de Entrega:</strong>
+            <br />
+            {address1} {address2 ? `, ${address2}` : ''}, {city}, {state}, {zipCode}
+          </Typography>
+          <Divider sx={{ my: 2, width: '100%' }} />
+
+          {/* Simulación de Código de Barras */}
+          <Box
+            sx={{
+              width: '80%',
+              height: '60px',
+              backgroundImage: 'linear-gradient(to right, black 40%, white 40%, white 60%, black 60%)',
+              backgroundSize: '10px 100%',
+              marginTop: 3,
+              marginBottom: 1,
+            }}
+          />
+          <Typography variant="body2" sx={{ textAlign: 'center', color: '#999' }}>
+            0123456789
+          </Typography>
+
+          {/* Mensaje de agradecimiento */}
+          <Typography variant="body1" sx={{ marginTop: 3, textAlign: 'center' }}>
+            <strong>¡Gracias por su compra!</strong>
+          </Typography>
+          <Typography variant="body2" sx={{ textAlign: 'center', color: '#999' }}>
+            {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
+          </Typography>
         </Box>
       </Container>
     </LayoutCheckout>

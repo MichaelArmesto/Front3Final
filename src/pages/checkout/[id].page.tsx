@@ -1,15 +1,14 @@
-// pages/checkout/[id].tsx
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { TextField, Button, Stepper, Step, StepLabel, Snackbar, Box, Typography, Grid, Card, CardContent } from '@mui/material';
 import LayoutCheckout from '../../components/layouts/layout-checkout';
 import Head from 'next/head';
-import { CheckoutInput } from '../../features/checkout/checkout.types'; 
+import { CheckoutInput } from '../../features/checkout/checkout.types';
 import { GetServerSideProps, NextPage } from 'next';
-import { getComic } from '../../services/marvel/marvel.service'; 
+import { getComic } from '../../services/marvel/marvel.service';
 import router from 'next/router';
 import Cards from 'react-credit-cards-2';
-import 'react-credit-cards-2/dist/es/styles-compiled.css'; // Importar los estilos
+import 'react-credit-cards-2/dist/es/styles-compiled.css';
 
 interface CheckoutPageProps {
   comic: Comic | null;
@@ -30,7 +29,7 @@ interface Comic {
 }
 
 const CheckoutPage: NextPage<CheckoutPageProps> = ({ comic, error }) => {
-  const { control, handleSubmit, formState: { errors, isValid }, watch } = useForm<CheckoutInput>({
+  const { control, handleSubmit, formState: { errors, isValid } } = useForm<CheckoutInput>({
     mode: 'onChange', // Activar la validación en tiempo real
   });
   const [activeStep, setActiveStep] = useState(0);
@@ -83,19 +82,17 @@ const CheckoutPage: NextPage<CheckoutPageProps> = ({ comic, error }) => {
           price: comic.price,
         },
       };
-  
+
       console.log('Datos sanitizados enviados a la API:', sanitizedData);
-  
+
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(sanitizedData),
       });
-  
+
       if (response.ok) {
-        // Guarda los datos de la compra en localStorage antes de redirigir
         localStorage.setItem('orderData', JSON.stringify(sanitizedData));
-  
         router.push('/confirmacion-compra');
       } else {
         const errorData = await response.json();
@@ -107,8 +104,6 @@ const CheckoutPage: NextPage<CheckoutPageProps> = ({ comic, error }) => {
       handleApiError({ error: 'ERROR_SERVER' });
     }
   };
-  
-  
 
   const handleApiError = (errorData: any) => {
     let message = '';
@@ -177,7 +172,7 @@ const CheckoutPage: NextPage<CheckoutPageProps> = ({ comic, error }) => {
 
           {/* Columna de la derecha: Formulario de checkout */}
           <Grid item xs={12} md={7}>
-            <Stepper activeStep={activeStep} alternativeLabel>
+            <Stepper activeStep={activeStep} alternativeLabel sx={{ marginBottom: 4 }}>
               {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
@@ -185,154 +180,182 @@ const CheckoutPage: NextPage<CheckoutPageProps> = ({ comic, error }) => {
               ))}
             </Stepper>
 
-            <form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: 24 }}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               {activeStep === 0 && (
-                <Box>
-                  <Controller
-                    name="customer.name"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Nombre es requerido' }}
-                    render={({ field }) => <TextField {...field} label="Nombre" fullWidth error={!!errors.customer?.name} helperText={errors.customer?.name?.message} />}
-                  />
-                  <Controller
-                    name="customer.lastname"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Apellido es requerido' }}
-                    render={({ field }) => <TextField {...field} label="Apellido" fullWidth error={!!errors.customer?.lastname} helperText={errors.customer?.lastname?.message} />}
-                  />
-                  <Controller
-                    name="customer.email"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Email es requerido', pattern: { value: /^\S+@\S+$/i, message: 'Email inválido' } }}
-                    render={({ field }) => <TextField {...field} label="Email" fullWidth error={!!errors.customer?.email} helperText={errors.customer?.email?.message} />}
-                  />
-                </Box>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="customer.name"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: 'Nombre es requerido' }}
+                      render={({ field }) => <TextField {...field} label="Nombre" fullWidth error={!!errors.customer?.name} helperText={errors.customer?.name?.message} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="customer.lastname"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: 'Apellido es requerido' }}
+                      render={({ field }) => <TextField {...field} label="Apellido" fullWidth error={!!errors.customer?.lastname} helperText={errors.customer?.lastname?.message} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="customer.email"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: 'Email es requerido', pattern: { value: /^\S+@\S+$/i, message: 'Email inválido' } }}
+                      render={({ field }) => <TextField {...field} label="Email" fullWidth error={!!errors.customer?.email} helperText={errors.customer?.email?.message} />}
+                    />
+                  </Grid>
+                </Grid>
               )}
               {activeStep === 1 && (
-                <Box>
-                  <Controller
-                    name="customer.address.address1"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Dirección es requerida' }}
-                    render={({ field }) => <TextField {...field} label="Dirección" fullWidth error={!!errors.customer?.address?.address1} helperText={errors.customer?.address?.address1?.message} />}
-                  />
-                  <Controller
-                    name="customer.address.address2"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => <TextField {...field} label="Departamento, piso, etc." fullWidth />}
-                  />
-                  <Controller
-                    name="customer.address.city"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Ciudad es requerida' }}
-                    render={({ field }) => <TextField {...field} label="Ciudad" fullWidth error={!!errors.customer?.address?.city} helperText={errors.customer?.address?.city?.message} />}
-                  />
-                  <Controller
-                    name="customer.address.state"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Provincia es requerida' }}
-                    render={({ field }) => <TextField {...field} label="Provincia" fullWidth error={!!errors.customer?.address?.state} helperText={errors.customer?.address?.state?.message} />}
-                  />
-                  <Controller
-                    name="customer.address.zipCode"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Código postal es requerido' }}
-                    render={({ field }) => <TextField {...field} label="Código postal" fullWidth error={!!errors.customer?.address?.zipCode} helperText={errors.customer?.address?.zipCode?.message} />}
-                  />
-                </Box>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="customer.address.address1"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: 'Dirección es requerida' }}
+                      render={({ field }) => <TextField {...field} label="Dirección" fullWidth error={!!errors.customer?.address?.address1} helperText={errors.customer?.address?.address1?.message} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="customer.address.address2"
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => <TextField {...field} label="Departamento, piso, etc." fullWidth />}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Controller
+                      name="customer.address.city"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: 'Ciudad es requerida' }}
+                      render={({ field }) => <TextField {...field} label="Ciudad" fullWidth error={!!errors.customer?.address?.city} helperText={errors.customer?.address?.city?.message} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Controller
+                      name="customer.address.state"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: 'Provincia es requerida' }}
+                      render={({ field }) => <TextField {...field} label="Provincia" fullWidth error={!!errors.customer?.address?.state} helperText={errors.customer?.address?.state?.message} />}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Controller
+                      name="customer.address.zipCode"
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: 'Código postal es requerido' }}
+                      render={({ field }) => <TextField {...field} label="Código postal" fullWidth error={!!errors.customer?.address?.zipCode} helperText={errors.customer?.address?.zipCode?.message} />}
+                    />
+                  </Grid>
+                </Grid>
               )}
               {activeStep === 2 && (
                 <Box>
-                  <Cards
-                    cvc={cardDetails.cvc}
-                    expiry={cardDetails.expiry}
-                    name={cardDetails.name}
-                    number={cardDetails.number}
-                  />
-                  <Controller
-                    name="card.number"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Número de tarjeta es requerido' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        name="number"
-                        label="Número de Tarjeta"
-                        fullWidth
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          field.onChange(e);
-                          handleInputChange(e);
-                        }}
+                  <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+                    <Cards
+                      cvc={cardDetails.cvc}
+                      expiry={cardDetails.expiry}
+                      name={cardDetails.name}
+                      number={cardDetails.number}
+                    />
+                  </Box>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Controller
+                        name="card.number"
+                        control={control}
+                        defaultValue=""
+                        rules={{ required: 'Número de tarjeta es requerido' }}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            name="number"
+                            label="Número de Tarjeta"
+                            fullWidth
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                              field.onChange(e);
+                              handleInputChange(e);
+                            }}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  <Controller
-                    name="card.nameOnCard"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Nombre en la tarjeta es requerido' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        name="name"
-                        label="Nombre en la Tarjeta"
-                        fullWidth
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          field.onChange(e);
-                          handleInputChange(e);
-                        }}
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Controller
+                        name="card.nameOnCard"
+                        control={control}
+                        defaultValue=""
+                        rules={{ required: 'Nombre en la tarjeta es requerido' }}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            name="name"
+                            label="Nombre en la Tarjeta"
+                            fullWidth
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                              field.onChange(e);
+                              handleInputChange(e);
+                            }}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  <Controller
-                    name="card.expDate"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Fecha de expiración es requerida' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        name="expiry"
-                        label="Fecha de Expiración"
-                        fullWidth
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          field.onChange(e);
-                          handleInputChange(e);
-                        }}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Controller
+                        name="card.expDate"
+                        control={control}
+                        defaultValue=""
+                        rules={{ required: 'Fecha de expiración es requerida' }}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            name="expiry"
+                            label="Fecha de Expiración"
+                            fullWidth
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                              field.onChange(e);
+                              handleInputChange(e);
+                            }}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  <Controller
-                    name="card.cvc"
-                    control={control}
-                    defaultValue=""
-                    rules={{ required: 'Código de seguridad es requerido' }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        name="cvc"
-                        label="Código de Seguridad"
-                        fullWidth
-                        type="password"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          field.onChange(e);
-                          handleInputChange(e);
-                        }}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Controller
+                        name="card.cvc"
+                        control={control}
+                        defaultValue=""
+                        rules={{ required: 'Código de seguridad es requerido' }}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            name="cvc"
+                            label="Código de Seguridad"
+                            fullWidth
+                            type="password"
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                              field.onChange(e);
+                              handleInputChange(e);
+                            }}
+                          />
+                        )}
                       />
-                    )}
-                  />
+                    </Grid>
+                  </Grid>
                 </Box>
               )}
-              <Box mt={2}>
+              <Box mt={4} display="flex" justifyContent="space-between">
                 <Button disabled={activeStep === 0} onClick={handleBack}>Volver</Button>
                 {activeStep === steps.length - 1 ? (
                   <Button type="submit" variant="contained" color="primary">Comprar</Button>
@@ -357,7 +380,7 @@ const CheckoutPage: NextPage<CheckoutPageProps> = ({ comic, error }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params!; // Utiliza context.params en lugar de context.query
+  const { id } = context.params!;
 
   try {
     const comic = await getComic(Number(id));
@@ -368,7 +391,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return { props: { comic } };
   } catch (error) {
-    console.error('Error al obtener el cómic:', error); // Añade este log para ver el error en la consola del servidor
+    console.error('Error al obtener el cómic:', error);
     return { props: { comic: null, error: 'Error al cargar el cómic.' } };
   }
 };
