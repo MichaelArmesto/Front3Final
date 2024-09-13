@@ -31,25 +31,34 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
     }
     try {
         const body: CheckoutInput = req.body;
+
+        console.log('Datos recibidos por la API:', body);
+        console.log('Número de tarjeta recibido:', body.card.number);
+
         if (body.customer.address.address2 === invalidAddress) {
+            console.log('Dirección inválida');
             res.status(400).json(ERROR_INCORRECT_ADDRESS);
             return
         }
         if (body.card.number === withoutFundsCard) {
+            console.log('Tarjeta sin fondos');
             res.status(400).json(ERROR_CARD_WITHOUT_FUNDS);
             return
         }
         if (body.card.number === withoutAuthorizationCard) {
+            console.log('Tarjeta sin autorización');
             res.status(400).json(ERROR_CARD_WITHOUT_AUTHORIZATION);
             return
         }
         if (body.card.number === validCard) {
+            console.log('Tarjeta válida');
             res.status(200).json({data: body});
             return
         }
+        console.log('Número de tarjeta incorrecto');
         res.status(400).json(ERROR_CARD_DATA_INCORRECT);
     } catch (err) {
-        console.log(err);
+        console.log('Error del servidor:', err);
         res.status(500).json(ERROR_SERVER);
     }
 

@@ -13,6 +13,7 @@ const getRandomColor = () => {
 interface Comic {
   id: number;
   title: string;
+  price:number;
   thumbnail: {
     path: string;
     extension: string;
@@ -40,6 +41,7 @@ const Index: NextPage = () => {
       }
       const data = await response.json();
       setComics(data.data.results);
+      console.log(data.data.results)
       setLoading(false);
     } catch (err) {
       setError('Error al cargar los cómics');
@@ -157,17 +159,23 @@ const Index: NextPage = () => {
                     </Box>
                   </Box>
                   <CardContent sx={{ textAlign: 'center', padding: 1 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                      <Button variant="contained" color="primary" size="small" sx={{ marginRight: 1 }}>
-                        Comprar
-                      </Button>
-                      <Link href={`/comics/${comic.id}`} passHref>
-                          <Button variant="outlined" color="secondary" size="small">
-                            Ver detalle
-                          </Button>
-                        </Link>
-                    </Box>
-                  </CardContent>
+  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+    {/* Link a la página de checkout */}
+    <Link href={`/checkout/${comic.id}`} passHref>
+  <Button variant="contained" color="primary" size="small" sx={{ marginRight: 1 }}>
+    Comprar
+  </Button>
+</Link>
+
+    {/* Link a la página de detalle del cómic */}
+    <Link href={`/comics/${comic.id}`} passHref>
+      <Button variant="outlined" color="secondary" size="small">
+        Ver detalle
+      </Button>
+    </Link>
+  </Box>
+</CardContent>
+
                 </Card>
               </Grid>
             ))}
