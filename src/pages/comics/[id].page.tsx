@@ -100,14 +100,26 @@ const ComicDetail: NextPage<ComicDetailProps> = ({ comic, characters, error }) =
                 </Typography>
               )}
 
-              <Button
-                variant="contained"
-                color={comic.stock > 0 ? 'primary' : 'secondary'}
-                disabled={comic.stock === 0}
-                style={{ marginTop: '16px' }}
-              >
-                {comic.stock > 0 ? 'Comprar' : 'Sin stock disponible'}
-              </Button>
+              {comic.stock > 0 ? (
+                <Link href={`/checkout/${comic.id}`} passHref>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ marginTop: '16px' }}
+                  >
+                    Comprar
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disabled
+                  style={{ marginTop: '16px' }}
+                >
+                  Sin stock disponible
+                </Button>
+              )}
 
               <Typography variant="h5" gutterBottom marginTop={4}>
                 Personajes asociados:
